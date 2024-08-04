@@ -1,0 +1,135 @@
+#modeli:
+	user (vlasnik, dekorater, admin)
+		username - jedinstveno
+		password
+		firstName
+		lastName
+		gender
+		address
+		phone
+		email
+		profilePicture
+		creditCardNumber
+	
+		profileType(vlasnik, dekorater, admin)
+		profileStatus (approved, not approved)
+		company (za dekoratere)
+
+		oldUsername (za change user post)
+
+	company
+		name
+		address
+		phone
+		worktime
+		free workers
+		services [array]
+		contact person
+		vacation start
+		vacation end
+
+	service
+		name
+		company
+		price
+
+	arrangement
+		company
+		user
+		
+		date
+		sqfeet
+		gardenType (privatna ili restoran)
+		poolsqf - samo priv
+		greensqf
+		restsqf - samo priv
+		waterfsqf - samo restoran
+		numOfTables - samo restoran
+		description
+		*json
+		status (not confirmed, confirmed, finished, cancelled)
+
+		number of pools
+		number of water features
+
+		decorator
+
+	maintance
+		last date
+		last time
+		status (done, requested, declined, accepted)
+		user
+		approximate next date
+		approximate next time
+		
+	
+
+#backend:
+	login
+	check username
+	change password
+
+	number of gardens
+	number of owners
+	number of decorators
+	number of booked jobs in last 24h, 7d, 30d
+	list of companies
+	list of decorators by company
+
+	get user
+	change user
+	get company services
+	book arrangement
+	get current arrangements
+	cancel arrangement
+	get arrangements by user
+
+	get not confirmed arrangements
+	get requested maintances (ako je prosao datum i vreme markuj kao done)
+	get number of jobs by month for decorator
+	get percentage of jobs for decorators of given company
+	get average number of jobs by day in last 24 months
+
+	get owners
+	get decorators
+	get companies
+	change company
+	accept registration request
+	decline registration request
+	add user
+	add company
+
+	get services
+	add service
+
+#frontend:
+	login
+	login admin
+	register (samo vlasnici, pravila kartice)
+	change password
+	unregistered - opste info o sajtu, liste sortiranje...
+
+	user profile
+	user companies
+	company info - info, liste, zakazivanje uredjenja (sa koracima, json upload i crtanje)
+	arrangements - tabela rezervacija, mogucnost otkazivanja
+	odrzavanje - zavrseni poslovi tabele
+
+	decorator profile
+	decorator arrangements - prihvati i odbi tabela
+	decorator maintances
+	decorator statistics
+
+	administrator - tabele i forme
+	
+	
+	
+
+
+
+
+
+
+
+
+	
