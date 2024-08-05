@@ -1,0 +1,22 @@
+[
+    {
+        "name": "CompanyA",
+        "address": "123 Garden St, Green City",
+        "phone": "123-456-7890",
+        "worktime": "09-17",
+        "freeWorkers": "2",  
+        "contactPerson": "098-765-4321",  
+        "vacationStart": "2024-08-01",
+        "vacationEnd": "2024-08-15"
+    },
+    {
+        "name": "CompanyB",
+        "address": "456 Flower Rd, Bloom Town",
+        "phone": "234-567-8901",
+        "worktime": "10-18",
+        "freeWorkers": "2",  
+        "contactPerson": "876-543-2109", 
+        "vacationStart": "2024-08-05",
+        "vacationEnd": "2024-08-20"
+    }
+]

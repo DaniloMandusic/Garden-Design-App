@@ -1,0 +1,52 @@
+[
+    {
+        "name": "Landscape Design",
+        "company": "CompanyA",
+        "price": "1500"
+    },
+    {
+        "name": "Plant Selection",
+        "company": "CompanyB",
+        "price": "800"
+    },
+    {
+        "name": "Irrigation System Installation",
+        "company": "CompanyA",
+        "price": "1200"
+    },
+    {
+        "name": "Garden Lighting",
+        "company": "CompanyB",
+        "price": "900"
+    },
+    {
+        "name": "Soil Testing",
+        "company": "CompanyA",
+        "price": "300"
+    },
+    {
+        "name": "Pathway Construction",
+        "company": "CompanyB",
+        "price": "1400"
+    },
+    {
+        "name": "Water Feature Installation",
+        "company": "CompanyA",
+        "price": "2500"
+    },
+    {
+        "name": "Garden Maintenance",
+        "company": "CompanyB",
+        "price": "600"
+    },
+    {
+        "name": "Fencing",
+        "company": "CompanyA",
+        "price": "1100"
+    },
+    {
+        "name": "Outdoor Furniture Setup",
+        "company": "CompanyB",
+        "price": "1300"
+    }
+]
