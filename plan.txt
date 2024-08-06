@@ -66,18 +66,18 @@
 
 #backend:
 	login
-	check username
-	change password
+	check username  -> POST /users with username as payload
+	change password -> POST /users/password
 
 	number of gardens
-	number of owners
-	number of decorators
+	number of owners -> GET /users?type=vlasnik&count=1
+	number of decorators -> GET /users?type=dekorater&count=1
 	number of booked jobs in last 24h, 7d, 30d
 	list of companies
 	list of decorators by company
 
-	get user
-	change user
+	get user    -> POST /users with payload username+password, username or _id
+	change user -> POST /users/mod with payload
 	get company services
 	book arrangement
 	get current arrangements
@@ -90,13 +90,13 @@
 	get percentage of jobs for decorators of given company
 	get average number of jobs by day in last 24 months
 
-	get owners
-	get decorators
+	get owners -> GET /users?type=vlasnik
+	get decorators -> GET /users?type=dekorater
 	get companies
 	change company
 	accept registration request
 	decline registration request
-	add user
+	add user -> POST /users/mod with payload
 	add company
 
 	get services
@@ -121,15 +121,3 @@
 	decorator statistics
 
 	administrator - tabele i forme
-	
-	
-	
-
-
-
-
-
-
-
-
-	
