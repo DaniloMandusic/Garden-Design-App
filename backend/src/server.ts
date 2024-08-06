@@ -5,6 +5,7 @@ import { Binary } from 'mongodb';
 import connectToDatabase from './db';
 // import models
 import UserModel from './models/user';
+import CompanyModel from "./models/company";
 // import utils
 import {encryptPassword, decryptPassword} from './libraries/crypto';
 
@@ -260,13 +261,128 @@ app.post('/users/password', async (req, res) => {
 
     }
 
-
   } catch (error) {
     console.error('Error logging in:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
+// company
+// get company/companies
+// filter by name or id
+app.get('/companies', async (req, res) => {
+
+  try {
+    await connectToDatabase();
+
+    const cname = req.query.name;
+    const cid   = req.query.id;
+
+    let searchParams = {};
+
+    if(cname) {
+      searchParams = {
+        name: cname
+      }
+    } else if(cid) {
+      searchParams = {
+        _id: cid
+      }
+    }
+
+    let c = await CompanyModel.find(searchParams);
+
+    console.log(c) ;
+
+    if (c.length > 0) {
+      res.status(200).json(c);
+      return;
+    }
+
+    res.status(404).json();
+
+  } catch (error) {
+    console.error('Error getting compaines:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+
+});
+
+// company add/update
+app.post('/companies/mod', async (req, res) => {
+  try {
+
+    await connectToDatabase();
+
+    const id = req.body.id;
+    const name = req.body.name;
+    const address = req.body.address;
+    const phone = req.body.phone;
+    const worktime = req.body.worktime;
+    const freeWorkers = req.body.freeWorkers;
+    const contactPerson = req.body.contactPerson;
+    const vacationStart = req.body.vacationStart;
+    const vacationEnd = req.body.vacationEnd;
+
+    if(id) {
+      // update
+      let c = await CompanyModel.updateOne(
+          {'_id': id},
+          {$set:
+            {
+              name: name,
+              address: address,
+              phone: phone,
+              worktime: worktime,
+              freeWorkers: freeWorkers,
+              contactPerson: contactPerson,
+              vacationStart: vacationStart,
+              vacationEnd: vacationEnd
+            }
+          }
+      );
+
+      if(c.matchedCount != 0) {
+        res.status(201).json({message: 'Company successfully updated'});
+      } else {
+        res.status(400).json({message: 'Company not updated'});
+      }
+
+    } else {
+      // insert
+      let c = await CompanyModel.findOne({ name: name});
+
+      if(c) {
+        res.status(400).json({message: 'Company already exists'});
+        return;
+      }
+
+      c = await CompanyModel.create(
+          {
+            name: name,
+            address: address,
+            phone: phone,
+            worktime: worktime,
+            freeWorkers: freeWorkers,
+            contactPerson: contactPerson,
+            vacationStart: vacationStart,
+            vacationEnd: vacationEnd
+          }
+      );
+
+      if(c) {
+        res.status(201).json({message: 'Company successfully created'});
+      } else {
+        res.status(400).json({message: 'Company not created'});
+      }
+
+    }
+
+  } catch (error) {
+    console.error('Error add/update company:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+})
 
 
 

@@ -73,7 +73,7 @@
 	number of owners -> GET /users?type=vlasnik&count=1
 	number of decorators -> GET /users?type=dekorater&count=1
 	number of booked jobs in last 24h, 7d, 30d
-	list of companies
+	list of companies -> GET /companies
 	list of decorators by company
 
 	get user    -> POST /users with payload username+password, username or _id
@@ -92,12 +92,14 @@
 
 	get owners -> GET /users?type=vlasnik
 	get decorators -> GET /users?type=dekorater
-	get companies
-	change company
+
+	get companies -> GET /companies
+	change company -> POST /companies/mod
+	add company -> POST /companies/mod
+
 	accept registration request
 	decline registration request
 	add user -> POST /users/mod with payload
-	add company
 
 	get services
 	add service
