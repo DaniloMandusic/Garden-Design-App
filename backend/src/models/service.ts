@@ -1,8 +1,8 @@
 import mongoose, { Schema } from 'mongoose';
 
 let ServiceSchema = new Schema({
-    name: String,
-    company: String,
+    name: { type: String, require: true },
+    company: { type: String, require: true },
     price: String,
 });
 
