@@ -8,6 +8,8 @@ import UserModel from './models/user';
 import CompanyModel from "./models/company";
 // import utils
 import {encryptPassword, decryptPassword} from './libraries/crypto';
+import Company from "./models/company";
+import company from "./models/company";
 
 const app = express();
 
@@ -382,6 +384,59 @@ app.post('/companies/mod', async (req, res) => {
     console.error('Error add/update company:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
+})
+
+app.post('/companies', async (req, res) => {
+
+  const companyData = req.body;
+
+  try {
+
+    await connectToDatabase();
+
+    const data = new CompanyModel(companyData);
+
+    let c = await data.save();
+
+    if(c) {
+      res.status(201).json({message: 'Company successfully created'});
+    } else {
+      res.status(400).json({message: 'Company not created'});
+    }
+
+  } catch (error) {
+
+    console.error('Error add company:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+
+  }
+
+})
+
+app.patch('/companies', async (req, res) => {
+
+  const name = req.body.name;
+  const dataCompany = req.body;
+
+  try {
+
+    await connectToDatabase();
+
+    const c = await CompanyModel.findOneAndUpdate({name: name}, dataCompany);
+
+    if(c) {
+      res.status(201).json({message: 'Company successfully updated'});
+    } else {
+      res.status(400).json({message: 'Company not updated'});
+    }
+
+  } catch (error) {
+
+    console.error('Error update company:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+
+  }
+
 })
 
 
