@@ -5,6 +5,7 @@ import UserModel from './models/user';
 import CompanyModel from "./models/company";
 import ServiceModel from "./models/service";
 import MaintanceModel from "./models/maintance";
+import ArrangementModel from "./models/arrangement";
 // import utils
 import {decryptPassword, encryptPassword} from './libraries/crypto';
 import {hashPassword} from "./middleware/hashpassword";
@@ -14,7 +15,7 @@ const app = express();
 
 // middleware
 app.use(express.json());
-app.use(hashPassword);
+//app.use(hashPassword);
 app.use(ach);
 
 // upload module
@@ -33,8 +34,9 @@ app.get('/users', async (req, res) => {
     console.log("get users")
     await connectToDatabase();
 
-    let profileType = req.query.type;
-    let count = req.query.count;
+    const profileType = req.query.type;
+    const username = req.query.username;
+    const count       = req.query.count;
 
     let searchParams = {};
 
@@ -42,13 +44,15 @@ app.get('/users', async (req, res) => {
       case 'vlasnik':
       case 'dekorater':
       case 'admin':
-        searchParams = {
-          profileType:profileType
-        };
+        searchParams = { ...searchParams, profileType:profileType };
         break;
       default:
         // namerno ostavljeno prazno
         break;
+    }
+
+    if(username) {
+      searchParams = { ...searchParams, username: username };
     }
 
     let allUsers = await UserModel.find(
@@ -80,7 +84,7 @@ app.get('/users', async (req, res) => {
 // username and password
 // username
 // id
-app.post('/users', async (req, res) => {
+app.post('/users', hashPassword, async (req, res) => {
   try {
     console.log("post userBy")
 
@@ -135,7 +139,7 @@ app.post('/users', async (req, res) => {
 });
 
 // user add/update
-app.post('/users/mod', upload.single('file') , async (req, res) => {
+app.post('/users/mod', hashPassword, upload.single('file') , async (req, res) => {
   try {
     // Connect to the database
     console.log("post addUser")
@@ -145,13 +149,14 @@ app.post('/users/mod', upload.single('file') , async (req, res) => {
     //npm i multer
     // da li je slika poslata?
     let profilePicture = null;
+
     if(req.file){
       profilePicture = req.file.buffer;
     }
 
     //console.log(file)
     const username = req.body.username;
-    const password = encryptPassword(req.body.password);
+    const password = req.body.password;
     const firstName = req.body.firstName;
     const lastName = req.body.lastName;
     const gender = req.body.gender;
@@ -166,7 +171,7 @@ app.post('/users/mod', upload.single('file') , async (req, res) => {
     //check if user exist
     let u = await UserModel.findOne({ username: username });
 
-    if(u){
+    if(u) {
       console.log("changing user")
 
       // ako je updejt, a nemamo novu sliku ostavi staru
@@ -229,13 +234,13 @@ app.post('/users/mod', upload.single('file') , async (req, res) => {
     }
 
   } catch (error) {
-    console.error('Error fetching users:', error);
+    console.error('Error add/update users:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
 // change user password
-app.post('/users/password', async (req, res) => {
+app.post('/users/password', hashPassword, async (req, res) => {
   try {
     // Connect to the database
     console.log("post changePassword")
@@ -647,7 +652,157 @@ app.patch('/maintenances', async (req, res) => {
 
 });
 
+// arrangements
+// get arrangements
+app.get('/arrangements', async (req, res) => {
 
+  try {
+    const auser = req.query.user;
+    const adecorator = req.query.decorator;
+    const acompany = req.query.company;
+
+    await connectToDatabase();
+
+    let searchParams = {};
+
+    //build search params
+    if(auser){
+      searchParams = {...searchParams, user: auser}
+    }
+
+    if(adecorator){
+      searchParams = {...searchParams, decorator: adecorator}
+    }
+
+    if(acompany) {
+      searchParams = {...searchParams, company: acompany}
+    }
+
+    const a = await ArrangementModel.find(searchParams);
+
+    if(a) {
+      res.status(200).json(a);
+    } else {
+      res.status(404).json();
+    }
+
+  } catch (error) {
+    console.error('Error get arragements:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+
+});
+
+// add arrangement
+app.post('/arrangements', async (req, res) => {
+
+  try {
+    await connectToDatabase();
+
+    const arragementData = req.body;
+
+    const arrangement = new ArrangementModel(arragementData);
+    const a = await arrangement.save();
+    if(a){
+      res.status(201).json(a);
+    } else {
+      res.status(400).json();
+    }
+
+  } catch (error) {
+    console.error('Error add arrangement:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+
+});
+
+// update arrangement
+app.patch('/arrangements', async (req, res) => {
+
+  try {
+    await connectToDatabase();
+
+    const arragementID = req.body.id;
+    const arragementData = req.body
+
+    const a = await ArrangementModel.findOneAndUpdate({'_id' : arragementID}, arragementData);
+
+    if(a){
+      res.status(204).json();
+    } else {
+      res.status(400).json();
+    }
+
+  } catch (error) {
+    console.error('Error update arrangement:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+
+});
+
+/*
+
+// auth
+app.post('/auth/register', async (req, res) => {
+  const userData = req.body;
+
+  try {
+    await connectToDatabase();
+
+    const u = await UserModel.findOne({email: userData.email});
+
+    if (u) {
+      res.status(400).json({'message': 'Email already taken'});
+    } else {
+      const hashedPassword = await encryptPassword(userData.password);
+      const user = await UserModel.create({
+        ...userData,
+        password: hashedPassword,
+      });
+
+      user.password = undefined;
+
+      res.status(201).json(user);
+    }
+  } catch (error) {
+    console.error('Error add maintenance:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.post('/auth/login', hashPassword, async (req, res) => {
+  const loginData = req.body;
+
+  await connectToDatabase();
+
+  let searchParams = {};
+
+  if(loginData.email) {
+    searchParams = {...searchParams, email: loginData.email}
+  } else if (loginData.username) {
+    searchParams = {...searchParams, username: loginData.username}
+  } else {
+    res.status(400).json();
+    return;
+  }
+
+  const user = await UserModel.findOne(searchParams);
+
+  if (user) {
+    const isPasswordMatching = loginData.password.compare(user.password);
+
+    if (isPasswordMatching) {
+      user.password = undefined;
+      res.status(200).json(user);
+    } else {
+      res.status(403).json();
+    }
+  } else {
+    res.status(401).json();
+  }
+});
+
+*/
 
 // ------------
 // server start

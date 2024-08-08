@@ -9,6 +9,7 @@ let ArrangementSchema = new Schema({
     poolsqf: String,
     greensqf: String,
     waterfsqf: String,
+    restsqf: String,
     numOfTables: String,
     description: String,
     json: String, // json file za mapu baste
