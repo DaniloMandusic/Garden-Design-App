@@ -150,6 +150,7 @@ app.post('/users/mod', hashPassword, upload.single('file') , async (req, res) =>
     // da li je slika poslata?
     let profilePicture = null;
 
+    //npm install
     if(req.file){
       profilePicture = req.file.buffer;
     }
